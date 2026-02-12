@@ -1,4 +1,4 @@
-﻿import {defineField, defineType} from 'sanity'
+import {defineField, defineType} from 'sanity'
 
 export const post = defineType({
   name: 'post',
@@ -108,7 +108,7 @@ export const post = defineType({
     prepare({title, author, media, tier}) {
       return {
         title,
-        subtitle: ${tier?.toUpperCase() || 'No tier'} | By ,
+        subtitle: `${tier?.toUpperCase() || 'No tier'} | By ${author || 'Unknown'}`,
         media,
       }
     },

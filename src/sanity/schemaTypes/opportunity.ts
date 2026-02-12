@@ -1,4 +1,4 @@
-﻿import {defineField, defineType} from 'sanity'
+import {defineField, defineType} from 'sanity'
 
 export const opportunity = defineType({
   name: 'opportunity',
@@ -97,7 +97,7 @@ export const opportunity = defineType({
     prepare({title, agency, type}) {
       return {
         title,
-        subtitle: ${type} | ,
+        subtitle: `${type} | ${agency}`,
       }
     },
   },
