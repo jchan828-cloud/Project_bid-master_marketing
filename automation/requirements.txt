@@ -5,3 +5,5 @@ beautifulsoup4
 schedule
 python-dotenv
 sanity
+praw
+linkedin-api
