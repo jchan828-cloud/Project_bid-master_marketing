@@ -1,5 +1,7 @@
 google-generative-ai
 feedparser
 requests
-schedule
 beautifulsoup4
+schedule
+python-dotenv
+sanity
