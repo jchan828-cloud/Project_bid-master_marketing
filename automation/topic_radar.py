@@ -1,58 +1,66 @@
 import os
 import time
-import schedule
 import feedparser
 import google.generativeai as genai
+from sanity_client import create_draft_post
+from dotenv import load_dotenv
 
-# The "Topic Radar" Automation Script
-# Monitors government sources (Federal Register, Canada Gazette) for relevant compliance changes.
+# Load environment variables
+load_dotenv()
 
 # Configuration
-FEDERAL_REGISTER_RSS = "https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bagencies%5D%5B%5D=defense-department"
+FEDERAL_REGISTER_RSS = "https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bagencies%5D%5B%5D=defense-department&conditions%5Btype%5D%5B%5D=RULE&conditions%5Btype%5D%5B%5D=PRORULE"
 CANADA_GAZETTE_RSS = "https://canadagazette.gc.ca/rp-pr/p1/rss-eng.xml" # Placeholder URL
+
+# Keywords to filter noise
+KEYWORDS = ["defense", "medical", "compliance", "acquisition", "cybersecurity", "small business", "set-aside", "8(a)", "indigenous"]
 
 def check_feeds():
     print("Scanning government feeds...")
 
     # 1. Fetch RSS Feeds
     feed_us = feedparser.parse(FEDERAL_REGISTER_RSS)
+    print(f"Found {len(feed_us.entries)} entries in Federal Register.")
+
+    new_topics = []
 
     for entry in feed_us.entries:
         title = entry.title
         summary = entry.summary
         link = entry.link
 
-        # 2. Filter using Gemini (The "Editor's Note" Protocol)
-        if is_relevant(title, summary):
-            print(f"Relevant Topic Found: {title}")
-            trigger_blog_writer(title, summary, link)
+        # 2. Filter using simple keywords first (Performance optimization)
+        if any(keyword in title.lower() or keyword in summary.lower() for keyword in KEYWORDS):
+            print(f"Potential Topic Found: {title}")
+            new_topics.append({
+                "title": title,
+                "summary": summary,
+                "link": link,
+                "source": "Federal Register"
+            })
 
-def is_relevant(title, summary):
+    # Process found topics
+    for topic in new_topics:
+        process_topic(topic)
+
+def process_topic(topic):
     """
-    Uses Gemini 3.0 to determine if a topic is relevant to GovCon compliance.
+    Uses Gemini 3.0 to determine relevance and draft content.
     """
-    # Placeholder for AI logic
-    # response = model.generate_content(...)
-    return "compliance" in title.lower() or "acquisition" in title.lower()
+    print(f"Processing topic: {topic['title']}")
 
-def trigger_blog_writer(title, summary, link):
-    """
-    Triggers the content generation pipeline.
-    """
-    # Call blog_writer.py or internal function
-    pass
+    # Check if we already have a post about this (Deduplication)
+    # TODO: Implement Sanity query check here.
 
-def main():
-    print("Starting Topic Radar...")
-    # Schedule daily check
-    schedule.every().day.at("09:00").do(check_feeds)
+    # Trigger Blog Writer
+    from blog_writer import generate_blog_post
+    draft = generate_blog_post(topic)
 
-    # Run once immediately for testing
-    check_feeds()
-
-    while True:
-        schedule.run_pending()
-        time.sleep(60)
+    if draft:
+        print("Draft generated successfully.")
+        create_draft_post(draft)
+    else:
+        print("Topic deemed irrelevant by AI.")
 
 if __name__ == "__main__":
-    main()
+    check_feeds()
