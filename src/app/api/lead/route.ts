@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     // 2. Initialize Resend
     // We use process.env directly for Vercel integration
     const apiKey = process.env.RESEND_API_KEY;
-    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    const segmentId = process.env.RESEND_SEGMENT_ID;
 
     if (!apiKey) {
       console.error('RESEND_API_KEY is missing');
@@ -42,24 +42,16 @@ export async function POST(request: Request) {
     // 3. The "Air-Gap" Write
     // We strictly *push* to Resend. We do NOT read from the SaaS DB.
 
-    // If audienceId is present, add to specific audience (Lead DB)
-    if (audienceId) {
-      try {
-        await resend.contacts.create({
-          email,
-          audienceId,
-          unsubscribed: false,
-          firstName: '', // We don't collect names initially to minimize friction
-          lastName: '',
-        });
-      } catch (error) {
-        console.error('Failed to add to Resend Audience:', error);
-        // Fallback: Just send a notification email to admin?
-        // For now, we assume Audience is the primary "Lead DB".
-        // We don't fail the request if audience add fails, but we should log it.
-      }
-    } else {
-        console.warn('RESEND_AUDIENCE_ID is missing. Lead not saved to audience.');
+    try {
+      await resend.contacts.create({
+        email,
+        unsubscribed: false,
+        firstName: '', // We don't collect names initially to minimize friction
+        lastName: '',
+        ...(segmentId ? { segments: [{ id: segmentId }] } : {}),
+      });
+    } catch (error) {
+      console.error('Failed to create Resend contact:', error);
     }
 
     // 4. Send Confirmation / Notification (Optional)
