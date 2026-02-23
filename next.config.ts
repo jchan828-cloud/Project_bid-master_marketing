@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ['sanity', '@sanity/vision', '@sanity/bifur-client', 'rxjs'],
+  serverExternalPackages: ['sanity', '@sanity/vision', '@sanity/bifur-client'],
 
   images: {
     remotePatterns: [

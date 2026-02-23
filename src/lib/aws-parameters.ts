@@ -31,6 +31,14 @@ const ENVIRONMENT = process.env.NODE_ENV === 'production' ? 'production' : 'deve
 const PARAMETER_PREFIX = `/bidmaster/marketing/${ENVIRONMENT}`
 
 // Parameter definitions with metadata
+interface ParameterConfig {
+  name: string
+  secure: boolean
+  required: boolean
+  public: boolean
+  default?: string
+}
+
 export const PARAMETERS = {
   // Sanity CMS
   SANITY_PROJECT_ID: {
@@ -132,9 +140,16 @@ export const PARAMETERS = {
     required: false,
     public: false,
   },
-} as const
+} as Record<string, ParameterConfig>
 
-export type ParameterKey = keyof typeof PARAMETERS
+export type ParameterKey =
+  | 'SANITY_PROJECT_ID' | 'SANITY_DATASET' | 'SANITY_API_VERSION' | 'SANITY_API_TOKEN'
+  | 'RESEND_API_KEY' | 'RESEND_AUDIENCE_ID'
+  | 'GEMINI_API_KEY'
+  | 'SAM_API_KEY'
+  | 'LINKEDIN_ACCESS_TOKEN' | 'LINKEDIN_ORG_ID'
+  | 'POSTHOG_KEY' | 'POSTHOG_HOST'
+  | 'APP_URL' | 'APP_REDIRECT_SECRET'
 
 // =============================================================================
 // SSM CLIENT
@@ -174,14 +189,14 @@ export async function getParameter(key: ParameterKey): Promise<string | null> {
     })
 
     const response = await client.send(command)
-    return response.Parameter?.Value || (config as any).default || null
+    return response.Parameter?.Value || config.default || null
   } catch (error: any) {
     if (error.name === 'ParameterNotFound') {
       if (config.required) {
         console.error(`Required parameter not found: ${parameterName}`)
         throw new Error(`Missing required parameter: ${key}`)
       }
-      return (config as any).default || null
+      return config.default || null
     }
     throw error
   }
@@ -208,7 +223,7 @@ export async function getParameters(keys: ParameterKey[]): Promise<Record<Parame
     for (const key of keys) {
       const paramName = `${PARAMETER_PREFIX}/${PARAMETERS[key].name}`
       const param = response.Parameters?.find((p) => p.Name === paramName)
-      result[key] = param?.Value || (PARAMETERS[key] as any).default || null
+      result[key] = param?.Value || PARAMETERS[key].default || null
     }
 
     // Check for missing required parameters
@@ -353,7 +368,7 @@ export async function getParameterWithFallback(
     return await getCachedParameter(key)
   } catch (error) {
     console.warn(`Failed to get parameter ${key} from AWS, no fallback available`)
-    return (PARAMETERS[key] as any).default || null
+    return PARAMETERS[key].default || null
   }
 }
 
