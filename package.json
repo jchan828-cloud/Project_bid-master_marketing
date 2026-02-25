@@ -3,53 +3,40 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 55523",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 55523",
     "lint": "next lint",
-    "type-check": "tsc --noEmit",
-    "setup:params": "npx ts-node scripts/setup-parameters.ts",
-    "setup:params:prod": "npx ts-node scripts/setup-parameters.ts --env production",
-    "setup:params:interactive": "npx ts-node scripts/setup-parameters.ts --interactive"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.953.0",
     "@portabletext/react": "^3.1.0",
     "@sanity/client": "^7.15.0",
-    "@sanity/image-url": "^2.0.3",
-    "@sanity/vision": "^5.9.0",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/vision": "^3.99.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "framer-motion": "^12.34.0",
-    "lucide-react": "^0.564.0",
-    "next": "16.1.6",
-    "next-sanity": "^12.1.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "resend": "^6.9.2",
-    "rxjs": "^7.8.1",
-    "sanity": "^5.9.0",
-    "styled-components": "^6.3.9",
-    "tailwind-merge": "^3.4.1",
-    "zod": "^4.3.6"
+    "framer-motion": "^11.0.0",
+    "lucide-react": "^0.460.0",
+    "next": "^15.5.12",
+    "next-sanity": "^9.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "resend": "^4.0.0",
+    "sanity": "^3.99.0",
+    "styled-components": "^6.1.0",
+    "tailwind-merge": "^2.5.0",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.18",
-    "@types/node": "22.14.0",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "15.1.6",
-    "postcss": "^8.4.0",
-    "tailwindcss": "4.1.18",
-    "ts-node": "^10.9.0",
-    "typescript": "5.9.3"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "sharp",
-      "unrs-resolver"
-    ]
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.25",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^15.1.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.0.0"
   }
 }

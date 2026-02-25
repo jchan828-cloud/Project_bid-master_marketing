@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm ls:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(test:*)",
+      "Bash(git revert:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(git stash:*)",
+      "Bash(npx vercel:*)",
+      "mcp__claude_ai_Vercel__deploy_to_vercel",
+      "mcp__claude_ai_Vercel__list_teams",
+      "mcp__claude_ai_Vercel__list_projects",
+      "Bash(pnpm --version:*)",
+      "Bash(pnpm run build:*)",
+      "mcp__claude_ai_Vercel__get_project",
+      "mcp__claude_ai_Vercel__web_fetch_vercel_url",
+      "Bash(curl:*)",
+      "mcp__claude_ai_Vercel__get_deployment_build_logs",
+      "mcp__claude_ai_Context7__resolve-library-id",
+      "mcp__claude_ai_Context7__query-docs",
+      "mcp__claude_ai_Vercel__get_access_to_vercel_url",
+      "Bash(git ls-tree:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rev-list:*)",
+      "Bash(git rebase:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr:*)",
+      "Bash(npx next build:*)"
+    ]
+  }
+}
